@@ -12,11 +12,11 @@ public:
 
 class StackArray {
 private:
-    int _top;				// index of top
-    int _capacity;			// capacity of array
-    //int *stack;			// array representing stack
+    int _top;               // index of top
+    int _capacity;          // capacity of array
+    //int *stack;           // array representing stack
     StackNode **obj_stack;	// object array representing stack
-    void doubleCapacity();	// double the capacity of stack when it's full.
+    void doubleCapacity();  // double the capacity of stack when it's full.
 public:
     StackArray(int top = -1, int cap = 1)		// initialize a array with constructor
         : _top(top), _capacity(cap)
@@ -50,9 +50,9 @@ void StackArray::pop()
     }
 
     //_top--;
-    //stack[_top--] = 0;				// (*1)
-    //delete obj_stack[_top--];			// (*2-1) Don't do this!!!
-    obj_stack[_top--]->~StackNode();	// (*2-2) These two methods which use dynamic allocation should avoid being used.
+    //stack[_top--] = 0;                // (*1)
+    //delete obj_stack[_top--];         // (*2-1) Don't do this!!!
+    obj_stack[_top--]->~StackNode();    // (*2-2) These two methods which use dynamic allocation should avoid being used.
 
 }
 
