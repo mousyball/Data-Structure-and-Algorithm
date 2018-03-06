@@ -14,8 +14,8 @@ public:
 
 class StackList {
 private:
-    int _size;			// record size
-    StackNode *_top;		// pointer points to the top
+    int _size;          // record size
+    StackNode *_top;    // pointer points to the top
 public:
     StackList() : _size(0), _top(NULL) {};
 
@@ -33,7 +33,7 @@ void StackList::pop()
     [NOTE] *2. top should be assigned to a Node, or we can't delete the node we wanna pop.
     3. top points to the nextNode.
     4. delete the node under poping.
-    5. --size	
+    5. --size
     */
 
 
@@ -42,10 +42,10 @@ void StackList::pop()
         return;
     }
 
-    StackNode *deleteNode = _top;		// [Note] Don't forget to do this.
+    StackNode *deleteNode = _top;       // [Note] Don't forget to do this.
     _top = deleteNode->next;
     delete deleteNode;
-    deleteNode = 0;						// [Note] Like in C, we set the pointer to NULL (0 in C++) after we delete the pointer.
+    deleteNode = 0;                     // [Note] Like in C, we set the pointer to NULL (0 in C++) after we delete the pointer.
     --_size;
 
 }
@@ -61,7 +61,7 @@ void StackList::push(int value)
 
     StackNode *newNode = new StackNode(value);
     newNode->next = _top;
-        // StackNode *newNode = new StackNode(value, _top);		// [Good Practice] use constructor to do the instantiation.
+        // StackNode *newNode = new StackNode(value, _top);     // [Good Practice] use constructor to do the instantiation.
     _top = newNode;
     ++_size;
 }
