@@ -45,7 +45,7 @@ void StackArray<T>::pop()
 
     // Minimum will change as the minimum element
     // of the stack is being removed.
-    if (temp <= minEle)
+    if (temp < minEle)
         minEle = 2 * minEle - temp;
 
     std::cout << "Top Most Element Removed: \n";
