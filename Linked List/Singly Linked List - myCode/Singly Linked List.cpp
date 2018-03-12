@@ -58,11 +58,19 @@ void LinkedList<T>::push_front(T x)
 template <class T>
 void LinkedList<T>::push_back(T x)
 {
+    ListNode<T> *new_node = new ListNode<T>(x);
+
+    // case: if list is empty.
+    if (first == 0) {
+        //new_node->next = first;
+        first = new_node;
+        return;
+    }
+
     // traverse the list to the last node, then insert a new node.
     ListNode<T> *ptr;
     for (ptr = first; ptr->next != 0; ptr = ptr->next);
-
-    ListNode<T> *new_node = new ListNode<T>(x);
+    
     new_node->next = ptr->next;
     ptr->next = new_node;
 }
@@ -89,7 +97,7 @@ void LinkedList<T>::erase(T x)
         return;
     }
 
-    delete_node = current; 
+    delete_node = current;
     if (previous != 0)
         previous->next = current->next;    // `x` is not the first node.
     else
@@ -118,8 +126,8 @@ void LinkedList<T>::reverse()
         return;
 
     ListNode<T> *previous = 0,
-                *current = first,
-                *preceding = first->next;
+        *current = first,
+        *preceding = first->next;
 
     while (preceding != 0) {
         current->next = previous;          // reverse the pointer bewteen previous and current.
