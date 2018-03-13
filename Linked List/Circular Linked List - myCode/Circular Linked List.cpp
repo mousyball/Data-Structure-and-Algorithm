@@ -21,7 +21,7 @@ template <class T>
 class LinkedList {
 private:
     // int size;                // [option] record the size of list
-    ListNode<T> *last;          // a pointer points to the last node
+    ListNode<T> *last;
 public:
     LinkedList() :last(0) {};
     void printList();           // print all the data out in the list
@@ -132,6 +132,12 @@ void LinkedList<T>::erase(T x)
 template <class T>
 void LinkedList<T>::clear()
 {
+    // return if list is empty.
+    if (last == 0) {
+        cout << "[Warning] clear() | You cannot do clear operation to a empty list." << endl;
+        return;
+    }
+
     // traverse the list, and delete node by the order.
     ListNode<T> *ptr = last->next;
 
@@ -176,6 +182,7 @@ int main()
 {
     LinkedList<int> myList;
 
+    myList.clear();
     myList.push_back(9);
     myList.push_front(8);
     myList.push_front(7);
