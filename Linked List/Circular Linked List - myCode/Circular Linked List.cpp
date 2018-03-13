@@ -21,7 +21,6 @@ template <class T>
 class LinkedList {
 private:
     // int size;                // [option] record the size of list
-    //ListNode<T> *last->next;  // pointer to the last->next node
     ListNode<T> *last;
 public:
     LinkedList() :last(0) {};
