@@ -21,7 +21,7 @@ template <class T>
 class LinkedList {
 private:
     // int size;                // [option] record the size of list
-    ListNode<T> *last;
+    ListNode<T> *last;          // a pointer points to the last node
 public:
     LinkedList() :last(0) {};
     void printList();           // print all the data out in the list
