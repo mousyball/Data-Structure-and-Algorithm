@@ -120,8 +120,10 @@ int QueueArrayCircular<T>::getSize()
 {
     if (back > front)
         return (back - front);
-    else
+    else if (back < front)
         return (capacity + back - front);
+    else
+        return 0;
 }
 
 template <class T>
