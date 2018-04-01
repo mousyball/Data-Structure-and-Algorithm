@@ -63,8 +63,12 @@ void StackArray::push(int value)
         doubleCapacity();
 
     int idx = ++_top;
-    obj_stack[idx] = new StackNode;
-    obj_stack[idx]->value = value;
+    //obj_stack[idx] = new StackNode;
+    //obj_stack[idx]->value = value;
+
+    // [NOTE] replace the upper codes with placement new.
+    void * addr = std::malloc(sizeof(StackNode));
+	obj_stack[idx] = new (addr) StackNode(value);
 
     //stack[++_top] = value;
 }
