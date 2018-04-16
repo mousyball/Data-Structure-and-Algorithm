@@ -24,7 +24,8 @@ private:
         count;                // count/size = load factor
     Node **table;             // pointer to pointer, hash table  
 
-    int hashFunction(int key);      // Multiplication method
+    int hashFunction(int key);             // Multiplication method
+    int hashFunction_BitShifting(int key); // Multiplication method using bit-shifting
     void tableDoubling();
     void tableShrinking();
     void rehashing(int size_orig);
@@ -118,6 +119,24 @@ int HashChainNode::hashFunction(int key)
     double A = 0.6180339887;
     double frac = key * A - floor(key*A);
     return floor(this->size*frac);
+}
+
+int HashChainNode::hashFunction_BitShifting(int key)
+{
+    // Multiplication method using bit-shifting
+    double A = 0.6180339887;
+    int bits_of_word = 32;
+    unsigned long long size_of_word = pow(2, bits_of_word);
+    int p = 0;                   // size is equal to 2 to the p-th power
+
+    int size_tmp = this->size;
+    while ((size_tmp & 0x00000001) != 1) {
+        size_tmp = size_tmp >> 1;
+        ++p;
+    }
+
+    unsigned int s = floor(A * size_of_word);
+    return (key * s) >> (bits_of_word - p);
 }
 
 void HashChainNode::tableDoubling()
