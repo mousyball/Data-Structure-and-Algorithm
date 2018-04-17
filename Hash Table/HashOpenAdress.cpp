@@ -144,7 +144,9 @@ int HashOpenAddress::quadraticProbing(int key, int i)
     return ((int)((key % size) + 0.5*i + 0.5*i*i) % size);
 
     // another quadraticProbing
-    //return ((key % size) - pow(-1, i) * pow(ceil(i/2), 2));
+    // [NOTE-1] size must be prime
+    // [NOTE-2] size = 4n + 3. e.g. (size, n)=(7, 1), (11, 2), (19, 4),...
+    //return ((key % size) - pow(-1, i) * pow(ceil(i/2), 2)) % size;
 }
 
 int HashOpenAddress::doubleHashing(int key, int i)
