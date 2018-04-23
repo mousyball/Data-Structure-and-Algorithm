@@ -8,17 +8,22 @@ using std::string;
 using std::queue;
 using std::stringstream;
 
+enum Node_Color {
+    RED = 0,
+    BLACK = 1
+};
+
 class TreeNode {
 private:
     TreeNode *leftchild;
     TreeNode *rightchild;
     TreeNode *parent;
     int key;
-    bool color;           // 0: Red, 1: Black
+    short color;           // 0: Red, 1: Black
     string data;
 public:
-    TreeNode() :leftchild(nullptr), rightchild(nullptr), parent(nullptr), key(0), color(0), data("") {};
-    TreeNode(int key, string str = "") :leftchild(nullptr), rightchild(nullptr), parent(nullptr), key(key), color(0), data(str) {};
+    TreeNode() :leftchild(nullptr), rightchild(nullptr), parent(nullptr), key(0), color(RED), data("") {};
+    TreeNode(int key, string str = "") :leftchild(nullptr), rightchild(nullptr), parent(nullptr), key(key), color(RED), data(str) {};
 
     int getKey() { return key; }
     string getData() { return data; }
@@ -65,7 +70,7 @@ RBT::RBT(string &key_str, string &data_str, string &color_str) {
 
     // initialize nil node
     neel = new TreeNode();
-    neel->color = 1;
+    neel->color = BLACK;
     root = neel;
     root->parent = neel;
 
@@ -83,9 +88,9 @@ void RBT::levelorderConstruct(stringstream &key_ss, stringstream &data_ss, strin
 {
     queue<TreeNode*> q;                 // create a queue to handle level-roder rule
     TreeNode *current = root;           // point *current to root
-    int key = -1;                       // initializa key as '-1'
-    bool color = 0;                     // initializa color as '0'
-    string data = "";                   // initializa data as ""
+    int key = -1;                       // initialize key as '-1'
+    short color = -1;                   // initialize color as '-1'
+    string data = "";                   // initialize data as ""
 
     while (key_ss >> key && data_ss >> data && color_ss >> color)
     {
@@ -111,7 +116,7 @@ void RBT::levelorderConstruct(stringstream &key_ss, stringstream &data_ss, strin
             new_node->parent = current;
             new_node->leftchild = neel;
             new_node->rightchild = neel;
-            
+
             current->rightchild = new_node;
             q.push(new_node);
         }
@@ -150,7 +155,7 @@ void RBT::leftRotation(TreeNode *x)
         y->leftchild->parent = x;
 
     y->parent = x->parent;
-    
+
     if (x->parent == neel)                // case0: (x == root)
         root = y;
     else if (x == x->parent->leftchild)   // case1: (x == x->parent->leftchild)
@@ -186,132 +191,134 @@ void RBT::rightRotation(TreeNode *x)
 
 void RBT::insertFixedUpRBT(TreeNode *current)
 {
-    // case0: parent是黑色, 就不用進回圈
-    while (current->parent->color == 0) {   // 若parent是紅色即進入迴圈
+    // case0: if parent is BLACK, skip the loop
+    while (current->parent->color == RED) {   // if parent is red, do the FixedUp stuff.
 
-                                            // 上半部：parent是grandparent的left child
+                                              // upper hadf：parent is grandparent's leftchild
         if (current->parent == current->parent->parent->leftchild) {
             TreeNode *uncle = current->parent->parent->rightchild;
-            // case1: 若uncle是紅色
-            if (uncle->color == 0) {
-                current->parent->color = 1;
-                uncle->color = 1;
-                current->parent->parent->color = 0;              //grandparent改成紅色
+            // case1: if uncle is red
+            if (uncle->color == RED) {
+                current->parent->color = BLACK;
+                uncle->color = BLACK;
+                current->parent->parent->color = RED;             // paint grandparent to color RED
                 current = current->parent->parent;
             }
-            // case2 & 3: uncle是黑色
+            // case2 & 3: uncle is BLACK
             else {
-                if (current == current->parent->rightchild) {     // case2
+                // case2
+                if (current == current->parent->rightchild) {
                     current = current->parent;
                     leftRotation(current);
                 }
                 // case3
-                current->parent->color = 1;                      //把parent塗黑
-                current->parent->parent->color = 0;              // grandparent塗紅
+                current->parent->color = BLACK;                   // paint parent to color BLACK
+                current->parent->parent->color = RED;             // paint grandparent to color RED
                 rightRotation(current->parent->parent);
             }
         }
-        // 下半部：parent是grandparent的right child, 與上半部對稱
+        // lower half：parent is grandparent's rightchild, symmetrical with the upper half
         else {
             TreeNode *uncle = current->parent->parent->leftchild;
-            // case1: 若uncle是紅色
-            if (uncle->color == 0) {
-                current->parent->color = 1;
-                uncle->color = 1;
-                current->parent->parent->color = 0;              //grandparent改成紅色
+            // case1: if uncle is RED
+            if (uncle->color == RED) {
+                current->parent->color = BLACK;
+                uncle->color = BLACK;
+                current->parent->parent->color = RED;            // paint grandparent to color RED
                 current = current->parent->parent;
             }
             // case2 & 3: uncle是黑色
             else {
-                if (current == current->parent->leftchild) {     // case2
+                // case2
+                if (current == current->parent->leftchild) {
                     current = current->parent;
                     rightRotation(current);
                 }
                 // case3
-                current->parent->color = 1;
-                current->parent->parent->color = 0;
+                current->parent->color = BLACK;
+                current->parent->parent->color = RED;
                 leftRotation(current->parent->parent);
             }
         }
     }
-    root->color = 1;    // 確保root是黑色
+    root->color = BLACK;    // 確保root是黑色
 }
 
 void RBT::deleteFixedUpRBT(TreeNode *current)
 {
-    // Case0:(i)  current是紅色的, 直接把它塗黑
-    //       (ii) current是root, 直接把它塗黑
-    while (current != root && current->color == 1) {
-        // current是leftchild
+    // Case0:(i)  current is RED, paint it to BLACK
+    //       (ii) current is root, paint it to BLACK
+    while (current != root && current->color == BLACK) {
+        // current is leftchild
         if (current == current->parent->leftchild) {
             TreeNode *sibling = current->parent->rightchild;
-            // Case1: 如果sibling是紅色
-            if (sibling->color == 0) {
-                sibling->color = 1;
-                current->parent->color = 0;
+            // Case1: if sibling is RED
+            if (sibling->color == RED) {
+                sibling->color = BLACK;
+                current->parent->color = RED;
                 leftRotation(current->parent);
                 sibling = current->parent->rightchild;
             }
-            // 進入 Case2、3、4: sibling是黑色
-            // Case2: sibling的兩個child都是黑色
-            if (sibling->leftchild->color == 1 && sibling->rightchild->color == 1) {
-                sibling->color = 0;
-                current = current->parent;           // 若current更新到root, 即跳出迴圈
+            // Case2, 3, 4: sibling is BLACK
+            // Case2: sibling's both children are BLACK
+            if (sibling->leftchild->color == BLACK && sibling->rightchild->color == BLACK) {
+                sibling->color = RED;
+                current = current->parent;           // if current updates to root, then break out the loop
             }
-            // Case3 & 4: current只有其中一個child是黑色
+            // Case3 & 4: one of current's child is BLACK
             else {
-                // case3: sibling的right child是黑的, left child是紅色
-                if (sibling->rightchild->color == 1) {
-                    sibling->leftchild->color = 1;
-                    sibling->color = 0;
+                // case3: sibling's rightchild is BLACK, leftchild is RED
+                if (sibling->rightchild->color == BLACK) {
+                    sibling->leftchild->color = BLACK;
+                    sibling->color = RED;
                     rightRotation(sibling);
                     sibling = current->parent->rightchild;
                 }
-                // 經過Case3後, 一定會變成Case4
-                // Case 4: sibling的right child 是紅色的, left child是黑色
+                // After Case3, it definitely becomes case4
+                // Case4: sibling's rightchild is RED, left child is BLACK
                 sibling->color = current->parent->color;
-                current->parent->color = 1;
-                sibling->rightchild->color = 1;
+                current->parent->color = BLACK;
+                sibling->rightchild->color = BLACK;
                 leftRotation(current->parent);
-                current = root;     // 將current移動到root, 一定跳出迴圈
+                current = root;     // current==root, break out the loop for sure
             }
         }
-        // current是rightchild
+        // current is rightchild
         else {
             TreeNode *sibling = current->parent->leftchild;
-            // Case1: 如果sibling是紅色
-            if (sibling->color == 0) {
-                sibling->color = 1;
-                current->parent->color = 0;
+            // Case1: if sibling is RED
+            if (sibling->color == RED) {
+                sibling->color = BLACK;
+                current->parent->color = RED;
                 rightRotation(current->parent);
                 sibling = current->parent->leftchild;
             }
-            // 進入 Case2、3、4: sibling是黑色
-            // Case2: sibling的兩個child都是黑色
-            if (sibling->leftchild->color == 1 && sibling->rightchild->color == 1) {
-                sibling->color = 0;
-                current = current->parent;             // 若current更新到root, 即跳出迴圈
+            // Case2, 3, 4: sibling is BLACK
+            // Case2: sibling's both children are BLACK
+            if (sibling->leftchild->color == BLACK && sibling->rightchild->color == BLACK) {
+                sibling->color = RED;
+                current = current->parent;             // current==root, break out the loop for sure
             }
             // Case3 & 4: current只有其中一個child是黑色
             else {
-                // case3: sibling的left child是黑的, right child是紅色
-                if (sibling->leftchild->color == 1) {
-                    sibling->rightchild->color = 1;
-                    sibling->color = 0;
+                // case3: sibling's leftchild is BLACK, rightchild is RED
+                if (sibling->leftchild->color == BLACK) {
+                    sibling->rightchild->color = BLACK;
+                    sibling->color = RED;
                     leftRotation(sibling);
                     sibling = current->parent->leftchild;
                 }
-                // 經過Case3後, 一定會變成Case4
-                // Case 4: sibling的left child 是紅色的, rightt child是黑色
+                // After Case3, it definitely becomes case4
+                // Case4: sibling's rightchild is RED, left child is BLACK
                 sibling->color = current->parent->color;
-                current->parent->color = 1;
-                sibling->leftchild->color = 1;
+                current->parent->color = BLACK;
+                sibling->leftchild->color = BLACK;
                 rightRotation(current->parent);
-                current = root;     // 將current移動到root, 一定跳出迴圈
+                current = root;     // current==root, break out the loop for sure
             }
         }
     }
-    current->color = 1;
+    current->color = BLACK;
 }
 
 TreeNode* RBT::successor(TreeNode *current)
@@ -344,7 +351,7 @@ void RBT::insertRBT(int key, string str)
     // search the parent of the inserted node
     while (ptr != neel) {        // use nil as condition in RBT
         parent = ptr;
-        
+
         if (key > ptr->key)
             ptr = ptr->rightchild;
         else
@@ -409,7 +416,7 @@ void RBT::deleteRBT(int key)
     }
 
     // if the del_real node is black, use FixUp at del_real_child.
-    if (del_real->color == 1)
+    if (del_real->color == BLACK)
         deleteFixedUpRBT(del_real_child);
 
     delete del_real;
@@ -435,8 +442,7 @@ int main()
     // Test_Case_01:
     string key_str = "50 30 70 20 35 -1 -1 -1 -1 34 -1";
     string data_str = "A B C D E x x x x J x";
-    //string color_str = "1 0 1 1 1 -1 -1 -1 -1 0 -1";
-    string color_str = "1 0 1 1 1 0 0 0 0 0 0";
+    string color_str = "1 0 1 1 1 -1 -1 -1 -1 0 -1";
     RBT mytree(key_str, data_str, color_str);
     mytree.levelOrder();
 
