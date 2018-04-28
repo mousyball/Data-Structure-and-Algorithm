@@ -86,7 +86,7 @@ void RBT::levelOrder()
     }
 }
 
-vector<TreeNode*> RBT::levelOrder_vec()
+vector<TreeNode*>& RBT::levelOrder_vec()
 {
     queue<TreeNode*> myQueue;                      // use Queue for level order traversal
     myQueue.push(this->root);                      // push the root pointer as the initialization

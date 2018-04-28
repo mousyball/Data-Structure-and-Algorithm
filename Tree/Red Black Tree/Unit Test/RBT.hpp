@@ -69,7 +69,7 @@ public:
     TreeNode* search(int key);   // called by DeleteRBT()
 
     // For Unit Test
-    vector<TreeNode*> levelOrder_vec();
+    vector<TreeNode*>& levelOrder_vec();
 };
 
 #endif // !_RBT_HPP
