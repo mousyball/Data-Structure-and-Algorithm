@@ -121,13 +121,14 @@ void Graph::printSCCs(int Start) {
 	Graph gT(num_vertex);
 	graphTranspose(gT);
 
-	// finishLargetoSmall[] is used to store the finish[] which contains the order of finished time for each vertex from greatest to least.
+	// finishLargetoSmall[] is used to store the index of finish[].
+	// After QuickSort, we will get the decendingly sorted finish[] and finishLargetoSmall[] containing the correspondingly sorted index of finish[].
 	int* finishLargetoSmall = new int[num_vertex];
 	for (int i = 0; i < num_vertex; i++) {
 		finishLargetoSmall[i] = i;
 	}
 
-	// Based on finish[], QuickSort() will update finishLargetoSmall[] in light of descending order of finished time of vertices index
+	/// Based on finish[], QuickSort() will update finishLargetoSmall[], and finishLargetoSmall[] will get the index of finished time in the descending order.
 	quickSort(finish, 0, num_vertex - 1, finishLargetoSmall);
 
 	// print out finish[] in the descending order of vertices
