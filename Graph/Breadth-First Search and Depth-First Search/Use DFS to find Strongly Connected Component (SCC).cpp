@@ -75,9 +75,11 @@ public:
 
 void swap(int& x, int& y) {
 
-	int temp = x;
-	x = y;
-	y = temp;
+	if (x != y) {
+        int temp = x;
+        x = y;
+        y = temp;
+    }
 
 	/// [NOTE] XOR swap failed while using pass-by-ref
 	//x ^= y;
@@ -135,7 +137,7 @@ void Graph::printSCCs(int Start) {
 	cout << "finish time Large to Small:" << endl;
 	printDataArray(finishLargetoSmall);
 
-	// Second time DFS() is executed on gT. Initialize fisrt, then DFS()
+	// Second time DFS() is executed on gT. Initialize first, then DFS()
 	gT.variableInitializeDFS();
 	int time = 0;
 	for (int i = 0; i < num_vertex; i++) {
