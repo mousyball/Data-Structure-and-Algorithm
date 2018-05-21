@@ -24,7 +24,7 @@ struct HeapNode {
 
 class BinaryHeap {
 private:
-    std::vector<HeapNode> heap;        // 存放HeapNode資料的矩陣
+    std::vector<HeapNode> heap;
     void swap(struct HeapNode &p1, struct HeapNode &p2);
     int findPosition(int node);
     int getParentNode(int node) { return std::floor(node / 2); };
