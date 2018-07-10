@@ -116,12 +116,12 @@ void mergeSort_myIterative(std::vector<int> &array, int front, int end, CMP comp
                 s.push(end);
 
                 s.push(STATE_SPLIT);
-                s.push(front);
-                s.push(mid);
-
-                s.push(STATE_SPLIT);
                 s.push(mid + 1);
                 s.push(end);
+
+                s.push(STATE_SPLIT);
+                s.push(front);
+                s.push(mid);                
             }
         }
         else {
